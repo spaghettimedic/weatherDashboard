@@ -2,6 +2,10 @@ h1 {
     background-image: linear-gradient(to right, rgb(49, 79, 214), rgb(50, 4, 136));
 }
 
-ul {
-    list-style-type: none;
+.btn-secondary {
+    background-color: rgba(128, 128, 128, 0.61);
+}
+
+.btn-info {
+    background-color: rgba(12, 143, 250, 0.774);
 }
