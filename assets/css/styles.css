@@ -9,3 +9,8 @@ h1 {
 .btn-info {
     background-color: rgba(12, 143, 250, 0.774);
 }
+
+img {
+    height: 50px;
+    width: auto;
+}
