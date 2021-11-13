@@ -3,8 +3,6 @@ var lat = [];
 var lon = [];
 var counter = 1;
 
-var searchBtn = document.getElementById("search");
-
 var getLatLon = function() {
     fetch("https://api.openweathermap.org/data/2.5/weather?q=" + userInput + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39")
     .then(function(response) {
@@ -15,12 +13,7 @@ var getLatLon = function() {
     });
 }
 
-$(".btn").click( function(event) {
-    event.preventDefault();
-
-    userInput = $("#userInput").val();
-
-    getLatLon();
+var getWeather = function() {
     var requestTodayUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat[0] + "&lon=" + lon[0] + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
     var request5DayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + userInput + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
 
@@ -84,5 +77,16 @@ $(".btn").click( function(event) {
                 counter++;
             };
         };
+    });
+}
+
+$("#search").click( function(event) {
+    event.preventDefault();
+    userInput = $("#userInput").val();
+    $.ajax({
+        url: getLatLon(),
+        success: function() {
+            getWeather();
+        }
     });
 });
