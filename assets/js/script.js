@@ -1,60 +1,70 @@
 var userInput = "";
-var lat = [];
-var lon = [];
+var lat = "";
+var lon = "";
 var counter = 1;
 
 var getLatLon = function() {
-    fetch("https://api.openweathermap.org/data/2.5/weather?q=" + userInput + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39")
+    var getLatLonUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + userInput + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39"
+
+    fetch(getLatLonUrl)
     .then(function(response) {
         return response.json();
     }).then(function(data) {
-        lat.push(data.coord.lat);
-        lon.push(data.coord.lon);
-    })
+        lat = data.coord.lat;
+        lon = data.coord.lon;
+    }).then(function() {
+        getWeather();
+    });
 };
 
 var getWeather = function() {
-    var requestTodayUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat[0] + "&lon=" + lon[0] + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
-    var request5DayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + userInput + "&units=imperial&appid=f57097d5fc9509b14eb672d6357fe102";
+    var requestTodayUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
         
     fetch(requestTodayUrl)
     .then(function(response) {
-        console.log(response);
         return response.json();
     }).then(function(data) {
-        console.log(data);
 
-        var icon = data.current.daily.weather.icon;
+        var icon = data.current.weather[0].icon;
         var date = "(" + moment().format("MM/DD/YYYY") + ")";
-        var temp = data.daily.temp.day + "\xB0" + "F";
-        var wind = data.daily.wind_speed + " MPH";
-        var humidity = data.daily.humidity + "%";
-        var UVIndex = data.daily.uvi;
+        var temp = data.current.temp + "\xB0" + "F";
+        var wind = data.current.wind_speed + " MPH";
+        var humidity = data.current.humidity + "%";
+        var UVIndex = data.current.uvi;
 
         // dynamically create elements for daily forecast here
         var todayHeader = $("<h4>").html("<span class='todayHeader'>" + date + " " + "<img src='http://openweathermap.org/img/wn/" + icon + "@2x.png'></span>");
         var pTemp = $("<p>").addClass("mb-2").html("Temp: <span>" + temp + "</span>");
         var pWind = $("<p>").addClass("mb-2").html("Wind: <span>" + wind + "</span>");
         var pHumidity = $("<p>").addClass("mb-2").html("Humidity: <span>" + humidity + "</span>");
-        var pUVIndex = $("<p>").addClass("mb-2").html("UV Index: <span id='UVI'>" + UVIndex + "</span>");
+
+        $("#weatherToday").append(todayHeader, pTemp, pWind, pHumidity);
         
         if (UVIndex > 4) {
-            $("#UVI").addClass("bg-warning border-warning rounded");
+            var pUVIndex = $("<p>").addClass("mb-2").html("UV Index: <span class='bg-warning border-warning rounded text-white px-2 py-1' id='UVI'>" + UVIndex + "</span>");
+            $("#weatherToday").append(pUVIndex);
         } else if (UVIndex > 8) {
-            $("#UVI").addClass("bg-danger border-danger rounded");
+            var pUVIndex = $("<p>").addClass("mb-2").html("UV Index: <span class='bg-danger border-danger rounded text-white px-2 py-1' id='UVI'>" + UVIndex + "</span>");
+            $("#weatherToday").append(pUVIndex);
         } else {
-            $("#UVI").addClass("bg-success border-success rounded");
+            var pUVIndex = $("<p>").addClass("mb-2").html("UV Index: <span class='bg-success border-success rounded text-white px-2 py-1' id='UVI'>" + UVIndex + "</span>");
+            $("#weatherToday").append(pUVIndex);
         };
 
-        $("#weatherToday").append(todayHeader, pTemp, pWind, pHumidity, pUVIndex);
+    }).then(function() {
+        get5Day();
     });
+};
+
+var get5Day = function() {
+    var request5DayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + userInput + "&units=imperial&appid=f57097d5fc9509b14eb672d6357fe102";
     
     fetch(request5DayUrl)
     .then(function(response) {
         return response.json();
     }).then(function(data) {
         var cityName = data.city.name;
-        $("<span>" + cityName + "</span>").insertBefore(".todayHeader");
+        $("<span>" + cityName + " </span>").insertBefore(".todayHeader");
 
         for (var i = 0; i < data.list.length; i++) {
             if (i === 6 || i === 14 || i === 22 || i === 30 || i === 38) {
@@ -77,16 +87,15 @@ var getWeather = function() {
                 counter++;
             };
         };
+        counter = 1;
     });
-};
+}
 
 $("#search").click( function(event) {
     event.preventDefault();
+    $("h4").remove();
+    $("p").remove();
     userInput = $("#userInput").val();
-    $.ajax({
-        url: getLatLon(),
-        success: function() {
-            getWeather();
-        }
-    });
+    
+    getLatLon();
 });
