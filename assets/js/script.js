@@ -10,13 +10,13 @@ var getLatLon = function() {
     }).then(function(data) {
         lat.push(data.coord.lat);
         lon.push(data.coord.lon);
-    });
-}
+    })
+};
 
 var getWeather = function() {
     var requestTodayUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat[0] + "&lon=" + lon[0] + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
-    var request5DayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + userInput + "&units=imperial&appid=126fddb2bf227e0327010f96d6495a39";
-
+    var request5DayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + userInput + "&units=imperial&appid=f57097d5fc9509b14eb672d6357fe102";
+        
     fetch(requestTodayUrl)
     .then(function(response) {
         console.log(response);
@@ -78,7 +78,7 @@ var getWeather = function() {
             };
         };
     });
-}
+};
 
 $("#search").click( function(event) {
     event.preventDefault();
