@@ -11,7 +11,7 @@ var createCityButton = function(cityName) {
 };
 
 var loadSavedCities = function() {
-    if (savedCities === "") {
+    if (savedCities === "" || !savedCities) {
         localStorage.setItem("savedCities", JSON.stringify(savedCities));
     };
     savedCities = JSON.parse(localStorage.getItem("savedCities"));
