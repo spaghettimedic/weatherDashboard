@@ -16,18 +16,19 @@
 
     <section class="col-3 row" id="form_buttons">
         <!-- search header, search bar, search button, and saved cities go here -->
-        <form class="my-auto mx-auto col-10">
+        <form class="my-1 mx-auto col-10">
             <label for="citySearch" class="form-label"><h4>Search for a City:</h4></label>
             <input name="citySearch" type="text" class="form-control mb-3" placeholder="San Diego" id="userInput">
             <button type="submit" for="citySearch" class="btn btn-info text-white form-control mb-2" id="search">Search</button>
         </form>
-        <hr class="col-10 mx-auto ">
+        <hr class="col-10 mx-auto">
 
-        <!-- <div>s for each saved city go here -->
-        <!-- <button class="border-0 btn btn-secondary my-2 py-0 col-10 mx-auto text-dark" type="button">Grand Rapids</button>
-        <button class="border-0 btn btn-secondary my-2 py-0 col-10 mx-auto text-dark" type="button">Detroit</button>
-        <button class="border-0 btn btn-secondary my-2 py-0 col-10 mx-auto text-dark" type="button">Ann Arbor</button>
-        <button class="border-0 btn btn-secondary my-2 py-0 col-10 mx-auto text-dark" type="button">New Baltimore</button> -->
+        <div class="my-1 ms-2 col-10 row" id="cityBtnContainer">
+            <!-- dynamically created city buttons inserted here from js -->
+        </div>
+        <div class="my-1 ms-2 col-10 row">
+            <button class="border-0 btn btn-danger my-2 py-0 col-10 mx-auto text-white" type="button" id="delete">Clear Cities</button>
+        </div>
     </section>
 
     <section class="col-9 mx-auto row">

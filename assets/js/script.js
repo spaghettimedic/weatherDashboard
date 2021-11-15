@@ -5,26 +5,24 @@ var counter = 1;
 var savedCities = [];
 
 var createCityButton = function(cityName) {
-    // check if there are any duplicate cities and remove them from savedCities
-    var filteredSavedCities = savedCities.filter((item, index) => savedCities.indexOf(item) === index);
-    savedCities = filteredSavedCities;
-
     var savedCityBtn = $("<button>").addClass("border-0 btn btn-secondary my-2 py-0 col-10 mx-auto text-dark btn-city").attr("type", "button").text(cityName);
-    $("#form_buttons").append(savedCityBtn);
+
+    $("#cityBtnContainer").append(savedCityBtn);
 };
 
 var loadSavedCities = function() {
+    if (savedCities === "") {
+        localStorage.setItem("savedCities", JSON.stringify(savedCities));
+    };
     savedCities = JSON.parse(localStorage.getItem("savedCities"));
+    // clear all city buttons so they can be regenerated without being repeated
+    $("#cityBtnContainer").html("");
 
-    if (savedCities == null) {
-        return false;
-    } else {
-        // create for loop to create button elements for each city in var savedCities
-        for (var i = 0; i < savedCities.length; i++) {
-            var cityName = savedCities[i];
-            createCityButton(cityName);
-        };
-    }
+    // create for loop to create button elements for each city in var savedCities
+    for (var i = 0; i < savedCities.length; i++) {
+        var cityName = savedCities[i];
+        createCityButton(cityName);
+    };
 };
 
 var getLatLon = function(userInput) {
@@ -93,17 +91,22 @@ var get5Day = function(userInput) {
         create5Day(data);
         return data;
     }).then(function() {
-        createCityButton();
+        loadSavedCities();
     });
 };
 
 var create5Day = function(data) {
     var cityName = data.city.name;
-    console.log(cityName);
     savedCities.push(cityName);
+
     // check if there are any duplicate cities and remove them from savedCities
     var filteredSavedCities = savedCities.filter((item, index) => savedCities.indexOf(item) === index);
     savedCities = filteredSavedCities;
+    console.log(savedCities.length);
+    if (savedCities.length > 5) {
+        savedCities = savedCities.slice(1)
+    };
+    console.log(savedCities.length);
 
     localStorage.setItem("savedCities", JSON.stringify(savedCities));
     $("<span>" + cityName + " </span>").insertBefore(".todayHeader")
@@ -142,7 +145,7 @@ $("#search").click(function(event) {
     getLatLon(userInput);
 });
 
-$("#form_buttons").on("click", ".btn-city", function(event) {
+$("#cityBtnContainer").on("click", ".btn-city", function(event) {
     event.preventDefault();
 
     $("#todayHeaderh4").remove();
@@ -150,6 +153,14 @@ $("#form_buttons").on("click", ".btn-city", function(event) {
 
     userInput = $(this).text()
     getLatLon(userInput);
+});
+
+// clears all cities on button click
+$("#delete").click(function(event) {
+    event.preventDefault();
+    $("#cityBtnContainer").empty();
+    savedCities = [];
+    localStorage.setItem("savedCities", JSON.stringify(savedCities));
 });
 
 $(document).ready(loadSavedCities);
