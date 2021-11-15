@@ -3,7 +3,6 @@ var lat = "";
 var lon = "";
 var counter = 1;
 var savedCities = [];
-var tmp = [];
 
 var createCityButton = function(cityName) {
     // check if there are any duplicate cities and remove them from savedCities
@@ -16,11 +15,16 @@ var createCityButton = function(cityName) {
 
 var loadSavedCities = function() {
     savedCities = JSON.parse(localStorage.getItem("savedCities"));
+
+    if (savedCities == null) {
+        return false;
+    } else {
         // create for loop to create button elements for each city in var savedCities
         for (var i = 0; i < savedCities.length; i++) {
             var cityName = savedCities[i];
             createCityButton(cityName);
         };
+    }
 };
 
 var getLatLon = function(userInput) {
@@ -29,13 +33,12 @@ var getLatLon = function(userInput) {
     fetch(getLatLonUrl)
     .then(function(response) {
         return response.json()
-        .then(function(data) {
+    }).then(function(data) {
             lat = data.coord.lat;
             lon = data.coord.lon;
-        }).then(function() {
-            getToday();
-            return userInput;
-        });
+    }).then(function() {
+        getToday();
+        return userInput;
     });
 };
 
@@ -89,14 +92,14 @@ var get5Day = function(userInput) {
     }).then(function(data) {
         create5Day(data);
         return data;
-    }).then(function(data) {
-        var cityName = data.city.name;
-        createCityButton(cityName);
+    }).then(function() {
+        createCityButton();
     });
 };
 
 var create5Day = function(data) {
     var cityName = data.city.name;
+    console.log(cityName);
     savedCities.push(cityName);
     // check if there are any duplicate cities and remove them from savedCities
     var filteredSavedCities = savedCities.filter((item, index) => savedCities.indexOf(item) === index);
@@ -137,8 +140,6 @@ $("#search").click(function(event) {
 
     userInput = $("#userInput").val();
     getLatLon(userInput);
-
-    $(this).trigger.reset();
 });
 
 $("#form_buttons").on("click", ".btn-city", function(event) {
