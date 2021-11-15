@@ -11,22 +11,16 @@ var createCityButton = function(cityName) {
 };
 
 var loadSavedCities = function() {
-    if (savedCities === "" || savedCities === null) {
-        localStorage.setItem("savedCities", JSON.stringify(savedCities));
-    };
-    savedCities = JSON.parse(localStorage.getItem("savedCities"));
+    // get savedCities array from localStorage, or initialize it in localStorage if it doesn't exist (first use of application, or user manually cleared their localStorage)
+    savedCities = JSON.parse(localStorage.getItem("savedCities") ?? "[]");
     // clear all city buttons so they can be regenerated without being repeated
     $("#cityBtnContainer").html("");
 
-    if (savedCities.length === null) {
-        return false;
-    } else {
-        // create for loop to create button elements for each city in var savedCities
-        for (var i = 0; i < savedCities.length; i++) {
-            var cityName = savedCities[i];
-            createCityButton(cityName);
-        };
-    }
+    // create for loop to create button elements for each city in savedCities array
+    for (var i = 0; i < savedCities.length; i++) {
+        var cityName = savedCities[i];
+        createCityButton(cityName);
+    };
 };
 
 var getLatLon = function(userInput) {
