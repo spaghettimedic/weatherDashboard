@@ -18,11 +18,15 @@ var loadSavedCities = function() {
     // clear all city buttons so they can be regenerated without being repeated
     $("#cityBtnContainer").html("");
 
-    // create for loop to create button elements for each city in var savedCities
-    for (var i = 0; i < savedCities.length; i++) {
-        var cityName = savedCities[i];
-        createCityButton(cityName);
-    };
+    if (savedCities.length === null) {
+        return false;
+    } else {
+        // create for loop to create button elements for each city in var savedCities
+        for (var i = 0; i < savedCities.length; i++) {
+            var cityName = savedCities[i];
+            createCityButton(cityName);
+        };
+    }
 };
 
 var getLatLon = function(userInput) {
