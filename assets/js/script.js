@@ -30,7 +30,17 @@ var getLatLon = function(userInput) {
 
     fetch(getLatLonUrl)
     .then(function(response) {
-        return response.json()
+        $.ajax({
+            url: getLatLonUrl,
+            type: "POST",
+            statusCode: {
+                404: function() {
+                    alert('"' + userInput + '"' + " is not a valid City name. Please try again!");
+                    return;
+                }
+            }
+        });
+        return response.json();
     }).then(function(data) {
             lat = data.coord.lat;
             lon = data.coord.lon;
@@ -102,11 +112,9 @@ var create5Day = function(data) {
     // check if there are any duplicate cities and remove them from savedCities
     var filteredSavedCities = savedCities.filter((item, index) => savedCities.indexOf(item) === index);
     savedCities = filteredSavedCities;
-    console.log(savedCities.length);
     if (savedCities.length > 5) {
         savedCities = savedCities.slice(1)
     };
-    console.log(savedCities.length);
 
     localStorage.setItem("savedCities", JSON.stringify(savedCities));
     $("<span>" + cityName + " </span>").insertBefore(".todayHeader")
@@ -143,6 +151,8 @@ $("#search").click(function(event) {
 
     userInput = $("#userInput").val();
     getLatLon(userInput);
+
+    $("#userInput").val("");
 });
 
 $("#cityBtnContainer").on("click", ".btn-city", function(event) {
